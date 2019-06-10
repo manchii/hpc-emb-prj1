@@ -1,4 +1,4 @@
-# HPC-Embedde-Project 1
+# HPC-Embedded-Project 1
 ### Assignment 1
 
 # Ubuntu 18.04
