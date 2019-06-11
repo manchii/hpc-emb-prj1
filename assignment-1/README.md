@@ -89,6 +89,15 @@ cd ../../ # salirse de BusyBox
 mkdir initramfs
 cd initramfs
 mkdir etc && mkdir proc && mkdir sys
+sudo mkdir -p dev/
+sudo mknod dev/tty1 c 4 1
+sudo mknod dev/tty2 c 4 2
+sudo mknod dev/tty3 c 4 3
+sudo mknod dev/tty4 c 4 4
+sudo mknod dev/console c 5 1sudo mknod dev/console c 5 1
+sudo mknod dev/console c 5 1
+sudo mknod dev/ttyAMA0 c 204 64
+sudo mknod dev/null c 1 3
 cp -av ../busybox-1.3.1/bb_build/_install/* ./
 rm linuxrc
 gedit init
@@ -107,10 +116,29 @@ chmod +x init
 find ./ -print0 | cpio --null -ov --format=newc  > initramfs.cpio
 ```
 
-Corriendo QEMU
+Corriendo QEMU probar Linux OS
 
 ```bash
 cd Linux-5.1
 cp ../initramfs/initramfs.cpio ./
 qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vexpress-v2p-ca9.dtb -kernel ./arch/arm/boot/zImage -nographic -m 512M -append "earlyprintk=serial console=ttyAMA0" -initrd initramfs.cpio
+```
+
+Creando imagen virtual de SD
+
+```bash
+dd if=/dev/zero of=./imagensd.img bs=1M count=64
+sudo losetup /dev/loop12 imagensd.img
+sudo gparted /dev/loop12
+sudo losetup -d /dev/loop12
+```
+
+Corriendo QEMU con imagen SD
+
+```bash
+qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot -sd imagensd.img -nographic -m 512M
+fatload mmc 0 0x60000000 zImage
+fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb
+fatload mmc 0 0x60600000 initramfs.cpio.gz
+bootz 0x60000000 0x60500000 0x60600000
 ```
