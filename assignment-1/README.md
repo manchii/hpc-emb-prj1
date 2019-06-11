@@ -136,9 +136,10 @@ sudo losetup -d /dev/loop12
 Corriendo QEMU con imagen SD
 
 ```bash
+mkimage -n 'Ramdisk Image'  -A arm -O linux -T ramdisk -C gzip -d initramfs.cpio.gz initramfs.uImage
 qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot -sd imagensd.img -nographic -m 512M
 fatload mmc 0 0x60000000 zImage
 fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb
-fatload mmc 0 0x60600000 initramfs.cpio.gz
-bootz 0x60000000 0x60500000 0x60600000
+setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M
+bootz 0x60000000 - 0x60500000
 ```
