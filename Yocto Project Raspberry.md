@@ -9,7 +9,7 @@ $ git clone -b thud git://git.yoctoproject.org/poky && cd poky
 $ git clone -b thud git://git.yoctoproject.org/meta-raspberrypi
 ```
 
-#Dependencies
+# Dependencies
 ```bash
 $ sudo apt install python-minimal
 
@@ -22,7 +22,7 @@ $ sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib bu
 $ . oe-init-build-env ../build
 ```
 
-#Result
+# Result
 ```bash
 You had no conf/local.conf file. This configuration file has therefore been
 created for you with some default values. You may wish to edit it to, for
@@ -70,7 +70,7 @@ BBLAYERS ?= " \
   /home/wp_user/workspace/my_yocto/poky/meta-raspberrypi \
   "
 ```
-Be carefully with the path in my case I used:
+****** Be carefully with the path in my case I used:*****
 
 ```bash
 /home/david/Desktop/high-embedded/my_yocto/poky/....
@@ -95,7 +95,7 @@ MACHINE ??= "raspberrypi3"
 [...]
 ```
 
-##BUILD A VERY FIRST IMAGE
+# Build a very first Image
 
 ```bash
 $ bitbake core-image-base
