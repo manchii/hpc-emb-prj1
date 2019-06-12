@@ -14,13 +14,14 @@ git clone https://github.com/manchii/hpc-emb-prj1
 Comandos
 
 ```bash
-git status		## Muestra el branch actual
-git branch dj-b		## Crea un branch
-git checkout dj-b	## Mueve a un branch designado
-git merge develop	## Convina el directorio local y los archivos del branch
-git config --global user.email "you@example.com" #Configura correo
-git config --global user.name "Your Name"	#Configura usuario
-
+git status				## Muestra el branch actual
+git branch dj-b				## Crea un branch
+git checkout dj-b			## Mueve a un branch designado
+git merge develop			## Convina el directorio local y los archivos del branch
+git config --global user.email "e-mail" #Configura correo
+git config --global user.name "Name"	#Configura usuario
+git commit -m "Text"			#Compara Local y Branch se debe hacer antes del push
+git push origin branchname		#Sube los cambios a Github
 ```
 
 
@@ -120,7 +121,6 @@ sudo mknod dev/tty2 c 4 2
 sudo mknod dev/tty3 c 4 3
 sudo mknod dev/tty4 c 4 4
 sudo mknod dev/console c 5 1
-##
 sudo mknod dev/ttyAMA0 c 204 64
 sudo mknod dev/null c 1 3
 cp -av ../busybox-1_30_1/bb_build/_install/* ./
