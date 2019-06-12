@@ -48,7 +48,42 @@ Common targets are:
 
 #“Raspberry Pi” has to be declared into the build system of Yocto
 ```bash
+$ cd ..
+```
+
+```bash
 $ vim build/conf/bblayers.conf
 ```
+
+#the bblayer should has something like this:
+
+```bash
+# POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+POKY_BBLAYERS_CONF_VERSION = "2"
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+BBLAYERS ?= " \
+  /home/wp_user/workspace/my_yocto/poky/meta \
+  /home/wp_user/workspace/my_yocto/poky/meta-poky \
+  /home/wp_user/workspace/my_yocto/poky/meta-yocto-bsp \
+  /home/wp_user/workspace/my_yocto/poky/meta-raspberrypi \
+  "
+```
+#be carefully with the path in my case I used:
+
+```bash
+/home/david/Desktop/high-embedded/my_yocto/poky/....
+```
+
+
+Yocto step is to choose the target machine. Raspberry Pi are ashamedly not mentioned among default machine choices because it comes from the meta-raspberrypi, so it must be added manually as showed below. All possible machines are available into “my_yocto/poky/meta-raspberrypi/conf/machine/”
+
+In our case is: raspberrypi2
+
+```bash
+$ vim build/conf/local.conf
+```
+
 
 
