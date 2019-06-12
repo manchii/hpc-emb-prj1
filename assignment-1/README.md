@@ -20,7 +20,7 @@ git checkout dj-b			## Mueve a un branch designado
 git merge develop			## Convina el directorio local y los archivos del branch
 git config --global user.email "e-mail" #Configura correo
 git config --global user.name "Name"	#Configura usuario
-git commit -m "Text"			#Compara Local y Branch se debe hacer antes del push
+git commit FILE2Commit -m "Message"	#Compara Local y Branch se debe hacer antes del push
 git push origin branchname		#Sube los cambios a Github
 ```
 
