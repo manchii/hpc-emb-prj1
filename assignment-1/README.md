@@ -133,7 +133,8 @@ sudo losetup /dev/loop12 imagensd.img
 sudo gparted /dev/loop12 # en vez de fdisk
 # Crear partición de FAT32 32MB (BOOT) y EXT3 32MB (rootfs)
 # copiar archivos u-boot,zImage,vexpress-v2p-ca9.dtb en FAT32 - BOOT
-# copiar archivos cp -rp initramfs/* /media/{suUser}/root
+# copiar archivos 
+cp -rp initramfs/* /media/${USER}/root
 sudo losetup -d /dev/loop12
 ```
 
