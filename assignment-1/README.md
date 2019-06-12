@@ -124,19 +124,23 @@ cp ../initramfs/initramfs.cpio ./
 qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vexpress-v2p-ca9.dtb -kernel ./arch/arm/boot/zImage -nographic -m 512M -append "earlyprintk=serial console=ttyAMA0" -initrd initramfs.cpio
 ```
 
-Creando imagen virtual de SD
+# Creando imagen virtual de SD
 
 ```bash
+sudo apt-get install gparted
 dd if=/dev/zero of=./imagensd.img bs=1M count=64
 sudo losetup /dev/loop12 imagensd.img
-sudo gparted /dev/loop12
+sudo gparted /dev/loop12 # en vez de fdisk
+# Crear partición de FAT32 32MB (BOOT) y EXT3 32MB (rootfs)
+# copiar archivos u-boot,zImage,vexpress-v2p-ca9.dtb en FAT32 - BOOT
+# copiar archivos cp -rp initramfs/* /media/{suUser}/root
 sudo losetup -d /dev/loop12
 ```
 
-Corriendo QEMU con imagen SD
+# Corriendo QEMU con imagen SD
 
 ```bash
-mkimage -n 'Ramdisk Image'  -A arm -O linux -T ramdisk -C gzip -d initramfs.cpio.gz initramfs.uImage
+#mkimage -n 'Ramdisk Image'  -A arm -O linux -T ramdisk -C gzip -d initramfs.cpio.gz initramfs.uImage
 qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot -sd imagensd.img -nographic -m 512M
 fatload mmc 0 0x60000000 zImage
 fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb
