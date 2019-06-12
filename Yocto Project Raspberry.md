@@ -1,5 +1,8 @@
 
 # Create your workspace
+
+Locate your workspace folder then
+
 ```bash
 $ mkdir my_yocto && cd my_yocto
 ## Clone Git repos
