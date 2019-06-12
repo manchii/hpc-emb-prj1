@@ -14,10 +14,10 @@ git clone https://github.com/manchii/hpc-emb-prj1
 Comandos
 
 ```bash
-git status				## Muestra el branch actual
+git status				## Muestra el branch actual y los archivos que no tienen commit
 git branch dj-b				## Crea un branch
 git checkout dj-b			## Mueve a un branch designado
-git merge develop			## Convina el directorio local y los archivos del branch
+git merge develop			## Combina el directorio local y los archivos del branch
 git config --global user.email "e-mail" #Configura correo
 git config --global user.name "Name"	#Configura usuario
 git commit FILE2Commit -m "Message"	#Compara Local y Branch se debe hacer antes del push
@@ -157,6 +157,7 @@ qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vex
 ```bash
 sudo apt-get install gparted
 dd if=/dev/zero of=./imagensd.img bs=1M count=64
+#Ejecutar comando -> (ls /dev/) para revisar loops en ejecucion, en este caso el loop12 estaba libre
 sudo losetup /dev/loop12 imagensd.img
 sudo gparted /dev/loop12 # en vez de fdisk
 # Crear partición de FAT32 32MB (BOOT) y EXT3 32MB (rootfs)
