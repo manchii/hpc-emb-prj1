@@ -70,7 +70,7 @@ BBLAYERS ?= " \
   /home/wp_user/workspace/my_yocto/poky/meta-raspberrypi \
   "
 ```
-#be carefully with the path in my case I used:
+Be carefully with the path in my case I used:
 
 ```bash
 /home/david/Desktop/high-embedded/my_yocto/poky/....
@@ -85,5 +85,20 @@ In our case is: raspberrypi2
 $ vim build/conf/local.conf
 ```
 
+The Modification should be like this:
+
+```bash
+[...]
+# This sets the default machine to be qemux86 if no other machine is selected:
+#MACHINE ??= "qemux86"
+MACHINE ??= "raspberrypi3"
+[...]
+```
+
+##BUILD A VERY FIRST IMAGE
+
+```bash
+$ bitbake core-image-base
+```
 
 
