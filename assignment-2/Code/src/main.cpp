@@ -2,6 +2,7 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <getopt.h>
 
 struct Config{
   uint height;
@@ -25,11 +26,11 @@ void RGB2YUV(const Pointer RGB, Pointer YUV) noexcept {
 template<typename Container>
 void printCode(const Container Pix) noexcept {
   for(auto &color : Pix){
-    std::cout<< "\t" << color;
-  } std::cout<< "\n";
+    std::cout << "\t" << color;
+  } std::cout << "\n";
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv){
   using pixel = std::array<double,3>;
   auto YUV = pixel{0.0,0.0,0.0};
   auto RGB = pixel{1.0,0.0,0.0};
