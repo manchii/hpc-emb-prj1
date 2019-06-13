@@ -4,8 +4,6 @@
 
 > Implementación del algoritmo RGB --> YUV
 
-
-
 ```c++
 #include <iostream>
 
