@@ -7,7 +7,7 @@ Locate your workspace folder then
 $ mkdir my_yocto && cd my_yocto
 ## Clone Git repos
 # The build system
-$ git clone -b thud git://git.yoctoproject.org/poky && cd poky
+$ git clone -b thud git://git.yoctoproject.org/poky/ && cd poky
 # Add specific meta for Raspberry Pi boards
 $ git clone -b thud git://git.yoctoproject.org/meta-raspberrypi
 ```

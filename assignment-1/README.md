@@ -14,9 +14,15 @@ git clone https://github.com/manchii/hpc-emb-prj1
 Comandos
 
 ```bash
-git status
-git branch dj-b
-git checkout dj-b
+git status				## Muestra el branch actual
+git branch dj-b				## Crea un branch
+git checkout dj-b			## Mueve a un branch designado
+git merge develop			## Convina el directorio local y los archivos del branch
+git config --global user.email "e-mail" #Configura correo
+git config --global user.name "Name"	#Configura usuario
+git add FILE				#Agrega informacion al commit
+git commit FILE2Commit -m "Message"	#Compara Local y Branch se debe hacer antes del push
+git push origin branchname		#Sube los cambios a Github
 ```
 
 
@@ -24,7 +30,9 @@ git checkout dj-b
 
 ```bash
 sudo apt-get install gcc-arm-linux-gnueabihf
-sudo apt-get install build-essentials
+sudo apt-get install build-essential
+sudo apt-get install bison
+sudo apt-get install flex
 ```
 
 
@@ -32,32 +40,41 @@ sudo apt-get install build-essentials
 # Emulador: QEMU ARM
 
 Instalar el QEMU en Ubuntu 18.04
+
 ```bash
 sudo apt-get install qemu-system-arm
 ```
 
+
+
 # Bootloader: U-boot 2019.04
 
-Descargar el release desde el repo
+Descargar el release desde el repositorio
 
 ```bash
 wget ftp://ftp.denx.de/pub/u-boot/u-boot-2019.04.tar.bz2
 ```
 
-Compilación
+Descomprimir y desde el directorio compilar:
+
 ```bash
-CROSS_COMPILE=arm-linux-gnueabihf-
-ARCH=arm
+CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
 make vexpress_ca9x4_defconfig CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
 make all CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
 qemu-system-arm -machine vexpress-a9 -nographic -no-reboot -kernel u-boot
 
 ```
+Para salir presionar CTRL+A y luego X
 
 # Kernel: Linux 5.1
+
+Descargar el release desde el repositorio
+
 ```bash
 wget https://github.com/torvalds/linux/archive/v5.1.zip
 ```
+
+Descomprimir y desde el directorio compilar:
 
 ```bash
 make vexpress_defconfig CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
@@ -65,6 +82,14 @@ make all CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
 ```
 
 # File-System: BusyBox
+
+Descargar el release desde el repositorio
+
+```bash
+wget https://github.com/mirror/busybox/archive/1_30_1.zip
+```
+
+Descomprimir y desde el directorio compilar:
 
 ```bash
 sudo apt-get install libncurses5-dev
@@ -84,8 +109,10 @@ make O=bb_build/ CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
 cd bb_build/
 make CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
 make install CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
-cd ../../ # salirse de BusyBox
+cd ../../ # sale de BusyBox
+
 # Hacer el ramdisk
+
 mkdir initramfs
 cd initramfs
 mkdir etc && mkdir proc && mkdir sys
@@ -94,11 +121,10 @@ sudo mknod dev/tty1 c 4 1
 sudo mknod dev/tty2 c 4 2
 sudo mknod dev/tty3 c 4 3
 sudo mknod dev/tty4 c 4 4
-sudo mknod dev/console c 5 1sudo mknod dev/console c 5 1
 sudo mknod dev/console c 5 1
 sudo mknod dev/ttyAMA0 c 204 64
 sudo mknod dev/null c 1 3
-cp -av ../busybox-1.3.1/bb_build/_install/* ./
+cp -av ../busybox-1_30_1/bb_build/_install/* ./
 rm linuxrc
 gedit init
 ```
@@ -111,6 +137,8 @@ echo -e "Hello World\n"
 exec /bin/sh
 ```
 
+Ejecutar en directorio initramfs el siguiente comando
+
 ```bash
 chmod +x init
 find ./ -print0 | cpio --null -ov --format=newc  > initramfs.cpio
@@ -118,8 +146,9 @@ find ./ -print0 | cpio --null -ov --format=newc  > initramfs.cpio
 
 Corriendo QEMU probar Linux OS
 
+
 ```bash
-cd Linux-5.1
+cd linux-5.1
 cp ../initramfs/initramfs.cpio ./
 qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vexpress-v2p-ca9.dtb -kernel ./arch/arm/boot/zImage -nographic -m 512M -append "earlyprintk=serial console=ttyAMA0" -initrd initramfs.cpio
 ```
@@ -129,8 +158,9 @@ qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vex
 ```bash
 sudo apt-get install gparted
 dd if=/dev/zero of=./imagensd.img bs=1M count=64
-sudo losetup /dev/loop12 imagensd.img
-sudo gparted /dev/loop12 # en vez de fdisk
+sudo losetup -a						#Muestra los loops en uso
+sudo losetup /dev/loop12 imagensd.img			#Utilizar un loop que no este en uso.
+sudo gparted /dev/loop12 				# en vez de fdisk
 # Crear partición de FAT32 32MB (BOOT) y EXT3 32MB (rootfs)
 # copiar archivos u-boot,zImage,vexpress-v2p-ca9.dtb en FAT32 - BOOT
 # copiar archivos 
