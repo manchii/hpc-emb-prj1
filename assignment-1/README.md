@@ -161,6 +161,8 @@ dd if=/dev/zero of=./imagensd.img bs=1M count=64
 sudo losetup -a						#Muestra los loops en uso
 sudo losetup /dev/loop12 imagensd.img			#Utilizar un loop que no este en uso.
 sudo gparted /dev/loop12 				# en vez de fdisk
+
+# Device/Create Parition Table../GPT
 # Crear partición de FAT32 32MB (BOOT) y EXT3 32MB (rootfs)
 # copiar archivos u-boot,zImage,vexpress-v2p-ca9.dtb en FAT32 - BOOT
 # copiar archivos 
