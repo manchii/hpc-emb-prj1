@@ -20,6 +20,7 @@ git checkout dj-b			## Mueve a un branch designado
 git merge develop			## Convina el directorio local y los archivos del branch
 git config --global user.email "e-mail" #Configura correo
 git config --global user.name "Name"	#Configura usuario
+git add FILE				#Agrega informacion al commit
 git commit FILE2Commit -m "Message"	#Compara Local y Branch se debe hacer antes del push
 git push origin branchname		#Sube los cambios a Github
 ```
@@ -157,8 +158,9 @@ qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vex
 ```bash
 sudo apt-get install gparted
 dd if=/dev/zero of=./imagensd.img bs=1M count=64
-sudo losetup /dev/loop12 imagensd.img
-sudo gparted /dev/loop12 # en vez de fdisk
+sudo losetup -a						#Muestra los loops en uso
+sudo losetup /dev/loop12 imagensd.img			#Utilizar un loop que no este en uso.
+sudo gparted /dev/loop12 				# en vez de fdisk
 # Crear partición de FAT32 32MB (BOOT) y EXT3 32MB (rootfs)
 # copiar archivos u-boot,zImage,vexpress-v2p-ca9.dtb en FAT32 - BOOT
 # copiar archivos 
