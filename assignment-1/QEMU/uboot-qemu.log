@@ -1,4 +1,4 @@
-U-Boot 2019.04 (Jun 02 2019 - 22:08:15 -0600)
+U-Boot 2019.04 (Jun 14 2019 - 19:56:39 -0700)
 
 DRAM:  512 MiB
 WARNING: Caches not enabled
@@ -11,28 +11,10 @@ Out:   serial
 Err:   serial
 Net:   smc911x-0
 Hit any key to stop autoboot:  0 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> fatload mmc 0 0x60000000 zImage
-4479432 bytes read in 2252 ms (1.9 MiB/s)
-=> fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb
-14087 bytes read in 52 ms (263.7 KiB/s)
-=> setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M
-=> bootz 0x60000000 - 0x60500000
-Kernel image @ 0x60000000 [ 0x000000 - 0x4459c8 ]
+4458536 bytes read in 1138 ms (3.7 MiB/s)
+14087 bytes read in 44 ms (312.5 KiB/s)
+Kernel image @ 0x60000000 [ 0x000000 - 0x440828 ]
 ## Flattened Device Tree blob at 60500000
    Booting using the fdt blob at 0x60500000
    Loading Device Tree to 7fe72000, end 7fe78706 ... OK
+

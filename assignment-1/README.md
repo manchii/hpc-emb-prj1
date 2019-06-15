@@ -191,15 +191,21 @@ bootz 0x60000000 - 0x60500000
 # Configurando el bootcmd para u-boot
 
 ```bash
+#Desde el directorio
 cd u-boot-2019.04
 make vexpress_ca9x4_defconfig CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
 make menuconfig CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
-# Configurar de la siguiente forma
-# donde bootcmd se inicializa con el script
+# Configurar de la siguiente forma:
+# delay in seconds before automatically booting = 0
+# Enable a default value for bootcmd = Copiar siguiente codigo
 # setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M; fatload mmc 0 0x60000000 zImage; fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb; bootz 0x60000000 - 0x60500000
 ```
 ![menuconfig-uboot.png](menuconfig-uboot.png)
 ```bash
 #Finalmente Exit y ...
 make all CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
+
+##Correr QEMU
+cd ..
+qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot-2019.04/u-boot -sd imagensd.img -nographic -m 512M
 ```
