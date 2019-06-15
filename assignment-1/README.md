@@ -1,6 +1,7 @@
 # HPC-Embedded-Project 1
 ### Assignment 1
 
+
 # Ubuntu 18.04
 * Virtual Box
 
@@ -159,7 +160,7 @@ qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vex
 sudo apt-get install gparted
 dd if=/dev/zero of=./imagensd.img bs=1M count=64
 sudo losetup -a						#Muestra los loops en uso
-sudo losetup /dev/loop12 imagensd.img			#Utilizar un loop que no este en uso.
+sudo losetup /dev/loop12 imagensd.img	      #Utilizar un loop que no este en uso.
 sudo gparted /dev/loop12 				# en vez de fdisk
 
 # Device/Create Parition Table../GPT
@@ -169,9 +170,9 @@ sudo gparted /dev/loop12 				# en vez de fdisk
 # Copiar archivos en FAT32 - BOOT
 ##  .../u-boot-2019.04/u-boot,
 ##  .../linux-5.1/arch/arm/boot/zImage
-##  .../linux-5.1/arch/arm/boot/dts/vexpress-v2p-ca9.dtb 
-# copiar archivos 
-sudo cp -rp initramfs/* /media/${USER}/Label
+##  .../linux-5.1/arch/arm/boot/dts/vexpress-v2p-ca9.dtb
+# copiar archivos
+sudo cp -rp initramfs/* /media/${USER}/Label_EXT3
 ## Desmontar particiones
 ```
 
@@ -185,4 +186,20 @@ fatload mmc 0 0x60000000 zImage
 fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb
 setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M
 bootz 0x60000000 - 0x60500000
+```
+
+# Configurando el bootcmd para u-boot
+
+```bash
+cd u-boot-2019.04
+make vexpress_ca9x4_defconfig CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
+make menuconfig CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
+# Configurar de la siguiente forma
+# donde bootcmd se inicializa con el script
+# setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M; fatload mmc 0 0x60000000 zImage; fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb; bootz 0x60000000 - 0x60500000
+```
+![menuconfig-uboot.png](menuconfig-uboot.png)
+```bash
+#Finalmente Exit y ...
+make all CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
 ```
