@@ -1,4 +1,5 @@
-WARNING: Image format was not specified for 'sdcard.img' and probing guessed raw.
+moradoug@moradoug-VirtualBox:~/Desktop/HPE$ qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot-2019.04/u-boot -sd imagensd.img -nographic -m 512M
+WARNING: Image format was not specified for 'imagensd.img' and probing guessed raw.
          Automatically detecting the format is dangerous for raw images, write operations on block 0 will be restricted.
          Specify the 'raw' format explicitly to remove the restrictions.
 pulseaudio: set_sink_input_volume() failed
@@ -7,7 +8,7 @@ pulseaudio: set_sink_input_mute() failed
 pulseaudio: Reason: Invalid argument
 
 
-U-Boot 2019.04 (Jun 02 2019 - 22:08:15 -0600)
+U-Boot 2019.04 (Jun 14 2019 - 19:56:39 -0700)
 
 DRAM:  512 MiB
 WARNING: Caches not enabled
@@ -20,28 +21,9 @@ Out:   serial
 Err:   serial
 Net:   smc911x-0
 Hit any key to stop autoboot:  0 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> 
-=> fatload mmc 0 0x60000000 zImage
-4479432 bytes read in 2252 ms (1.9 MiB/s)
-=> fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb
-14087 bytes read in 52 ms (263.7 KiB/s)
-=> setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M
-=> bootz 0x60000000 - 0x60500000
-Kernel image @ 0x60000000 [ 0x000000 - 0x4459c8 ]
+4458536 bytes read in 1138 ms (3.7 MiB/s)
+14087 bytes read in 44 ms (312.5 KiB/s)
+Kernel image @ 0x60000000 [ 0x000000 - 0x440828 ]
 ## Flattened Device Tree blob at 60500000
    Booting using the fdt blob at 0x60500000
    Loading Device Tree to 7fe72000, end 7fe78706 ... OK
@@ -49,7 +31,7 @@ Kernel image @ 0x60000000 [ 0x000000 - 0x4459c8 ]
 Starting kernel ...
 
 Booting Linux on physical CPU 0x0
-Linux version 5.1.0 (hpc@Latitude-5480) (gcc version 7.4.1 20181213 [linaro-7.4-2019.02 revision 56ec6f6b99cc167ff0c2f8e1a2eed33b1edc85d4] (Linaro GCC 7.4-2019.02)) #1 SMP Mon Jun 3 16:12:34 CST 2019
+Linux version 5.1.0 (moradoug@moradoug-VirtualBox) (gcc version 7.4.0 (Ubuntu/Linaro 7.4.0-1ubuntu1~18.04)) #1 SMP Wed Jun 12 01:20:19 PDT 2019
 CPU: ARMv7 Processor [410fc090] revision 0 (ARMv7), cr=10c5387d
 CPU: PIPT / VIPT nonaliasing data cache, VIPT nonaliasing instruction cache
 OF: fdt: Machine model: V2P-CA9
@@ -67,7 +49,7 @@ printk: log_buf_len individual max cpu contribution: 4096 bytes
 printk: log_buf_len total cpu_extra contributions: 12288 bytes
 printk: log_buf_len min size: 16384 bytes
 printk: log_buf_len: 32768 bytes
-printk: early log buf free: 14564(88%)
+printk: early log buf free: 14620(89%)
 Dentry cache hash table entries: 65536 (order: 6, 262144 bytes)
 Inode-cache hash table entries: 32768 (order: 5, 131072 bytes)
 Memory: 492168K/524288K available (7168K kernel code, 428K rwdata, 1588K rodata, 1024K init, 158K bss, 15736K reserved, 16384K cma-reserved)
@@ -92,8 +74,8 @@ clocksource: arm,sp804: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19
 Failed to initialize '/smb@4000000/motherboard/iofpga@7,00000000/timer@12000': -22
 smp_twd: clock not found -2
 Console: colour dummy device 80x30
-Calibrating local timer... 100.06MHz.
-Calibrating delay loop... 175.51 BogoMIPS (lpj=877568)
+Calibrating local timer... 96.14MHz.
+Calibrating delay loop... 501.35 BogoMIPS (lpj=2506752)
 pid_max: default: 32768 minimum: 301
 Mount-cache hash table entries: 1024 (order: 0, 4096 bytes)
 Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes)
@@ -107,7 +89,7 @@ Setting up static identity map for 0x60100000 - 0x60100060
 rcu: Hierarchical SRCU implementation.
 smp: Bringing up secondary CPUs ...
 smp: Brought up 1 node, 1 CPU
-SMP: Total of 1 processors activated (175.51 BogoMIPS).
+SMP: Total of 1 processors activated (501.35 BogoMIPS).
 CPU: All CPU(s) started in SVC mode.
 devtmpfs: initialized
 VFP support v0.3: implementor 41 architecture 3 part 30 variant 9 rev 0
@@ -193,14 +175,13 @@ usbcore: registered new interface driver usbhid
 usbhid: USB HID core driver
 mmc0: new SD card at address 4567
 mmcblk0: mmc0:4567 QEMU! 64.0 MiB 
+random: fast init done
 aaci-pl041 10004000.aaci: ARM AC'97 Interface PL041 rev0 at 0x10004000, irq 20
 aaci-pl041 10004000.aaci: FIFO 512 entries
 oprofile: using arm/armv7-ca9
 NET: Registered protocol family 17
 9pnet: Installing 9P2000 support
 Registering SWP/SWPB emulation handler
-random: fast init done
-input: ImExPS/2 Generic Explorer Mouse as /devices/platform/smb@4000000/smb@4000000:motherboard/smb@4000000:motherboard:iofpga@7,00000000/10007000.kmi/serio1/input/input2
  mmcblk0: p1 p2
 Error: Driver 'vexpress-muxfpga' is already registered, aborting...
 drm-clcd-pl111 10020000.clcd: initializing Versatile Express PL111
@@ -208,9 +189,13 @@ drm-clcd-pl111 10020000.clcd: DVI muxed to daughterboard 1 (core tile) CLCD
 Error: Driver 'vexpress-muxfpga' is already registered, aborting...
 drm-clcd-pl111 10020000.clcd: initializing Versatile Express PL111
 drm-clcd-pl111 10020000.clcd: DVI muxed to daughterboard 1 (core tile) CLCD
-rtc-pl031 10017000.rtc: setting system clock to 2019-06-12T03:01:46 UTC (1560308506)
+rtc-pl031 10017000.rtc: setting system clock to 2019-06-15T03:29:51 UTC (1560569391)
 ALSA device list:
   #0: ARM AC'97 Interface PL041 rev0 at 0x10004000, irq 20
+input: ImExPS/2 Generic Explorer Mouse as /devices/platform/smb@4000000/smb@4000000:motherboard/smb@4000000:motherboard:iofpga@7,00000000/10007000.kmi/serio1/input/input2
+Error: Driver 'vexpress-muxfpga' is already registered, aborting...
+drm-clcd-pl111 10020000.clcd: initializing Versatile Express PL111
+drm-clcd-pl111 10020000.clcd: DVI muxed to daughterboard 1 (core tile) CLCD
 EXT4-fs (mmcblk0p2): mounting ext3 file system using the ext4 subsystem
 EXT4-fs (mmcblk0p2): mounted filesystem with ordered data mode. Opts: (null)
 VFS: Mounted root (ext3 filesystem) readonly on device 179:2.
