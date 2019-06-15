@@ -12,6 +12,17 @@ $ git clone -b thud git://git.yoctoproject.org/poky/ && cd poky
 $ git clone -b thud git://git.yoctoproject.org/meta-raspberrypi
 ```
 
+Another option if the execution of the Clone repos commands above are unsuccessfully (https://)
+
+```bash
+## Clone Git repos
+# The build system
+$ git clone -b thud https://git.yoctoproject.org/git/poky && cd poky
+# Add specific meta for Raspberry Pi boards
+$ git clone -b thud https://git.yoctoproject.org/git/meta-raspberrypi
+```
+
+
 # Dependencies
 ```bash
 $ sudo apt install python-minimal
@@ -25,7 +36,15 @@ $ sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib bu
 $ . oe-init-build-env ../build
 ```
 
+Another option if command execution above is unsuccessfully 
+```bash
+$ source oe-init-build-env ../build
+```
+
 # Result
+
+Make sure you obtained the message below 
+
 ```bash
 You had no conf/local.conf file. This configuration file has therefore been
 created for you with some default values. You may wish to edit it to, for
@@ -52,10 +71,10 @@ Common targets are:
 #“Raspberry Pi” has to be declared into the build system of Yocto
 ```bash
 $ cd ..
-```
+``` 
 
 ```bash
-$ vim build/conf/bblayers.conf
+$ gedit build/conf/bblayers.conf
 ```
 
 #the bblayer should has something like this:
@@ -85,7 +104,7 @@ Yocto step is to choose the target machine. Raspberry Pi are ashamedly not menti
 In our case is: raspberrypi2
 
 ```bash
-$ vim build/conf/local.conf
+$ gedit build/conf/local.conf
 ```
 
 The Modification should be like this:
@@ -94,7 +113,7 @@ The Modification should be like this:
 [...]
 # This sets the default machine to be qemux86 if no other machine is selected:
 #MACHINE ??= "qemux86"
-MACHINE ??= "raspberrypi3"
+MACHINE ??= "raspberrypi2"
 [...]
 ```
 
@@ -102,6 +121,12 @@ MACHINE ??= "raspberrypi3"
 
 ```bash
 $ bitbake core-image-base
+```
+
+# Copying the image to the SD card
+
+```bash
+$ sudo dd bs=4M if=core-image-base-raspberrypi2.rpi-sdimg of=/dev/mmcblk0 conv=fsync
 ```
 
 
