@@ -162,18 +162,26 @@ dd if=/dev/zero of=./imagensd.img bs=1M count=64
 sudo losetup -a						#Muestra los loops en uso
 sudo losetup /dev/loop12 imagensd.img	      #Utilizar un loop que no este en uso.
 sudo gparted /dev/loop12 				# en vez de fdisk
-# Crear partición de FAT32 32MB (BOOT) y EXT3 32MB (rootfs)
-# copiar archivos u-boot,zImage,vexpress-v2p-ca9.dtb en FAT32 - BOOT
+
+# Device/Create Parition Table../GPT
+# Crear partición de File system: FAT32 New Size: 32MB (Label: BOOT)
+# Crear partición de File system: EXT3 New Size: 30MB (Label: rootfs)
+# Presionar Check, Apply, Save Details
+# Copiar archivos en FAT32 - BOOT
+##  .../u-boot-2019.04/u-boot,
+##  .../linux-5.1/arch/arm/boot/zImage
+##  .../linux-5.1/arch/arm/boot/dts/vexpress-v2p-ca9.dtb
 # copiar archivos
-cp -rp initramfs/* /media/${USER}/root
-sudo losetup -d /dev/loop12
+sudo cp -rp initramfs/* /media/${USER}/Label_EXT3
+## Desmontar particiones
 ```
 
 # Corriendo QEMU con imagen SD
 
 ```bash
-#mkimage -n 'Ramdisk Image'  -A arm -O linux -T ramdisk -C gzip -d initramfs.cpio.gz initramfs.uImage
-qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot -sd imagensd.img -nographic -m 512M
+
+qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot-2019.04/u-boot -sd imagensd.img -nographic -m 512M
+##Copiar 4 comandos en consola
 fatload mmc 0 0x60000000 zImage
 fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb
 setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M

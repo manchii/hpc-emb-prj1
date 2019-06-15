@@ -55,7 +55,7 @@ $ cd ..
 ```
 
 ```bash
-$ vim build/conf/bblayers.conf
+$ gedit build/conf/bblayers.conf
 ```
 
 #the bblayer should has something like this:
@@ -79,13 +79,12 @@ BBLAYERS ?= " \
 /home/david/Desktop/high-embedded/my_yocto/poky/....
 ```
 
-
 Yocto step is to choose the target machine. Raspberry Pi are ashamedly not mentioned among default machine choices because it comes from the meta-raspberrypi, so it must be added manually as showed below. All possible machines are available into “my_yocto/poky/meta-raspberrypi/conf/machine/”
 
 In our case is: raspberrypi2
 
 ```bash
-$ vim build/conf/local.conf
+$ gedit build/conf/local.conf
 ```
 
 The Modification should be like this:
