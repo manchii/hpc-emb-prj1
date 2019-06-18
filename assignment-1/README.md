@@ -1,6 +1,7 @@
 # HPC-Embedded-Project 1
 ### Assignment 1
 
+
 # Ubuntu 18.04
 * Virtual Box
 
@@ -20,6 +21,7 @@ git checkout dj-b			## Mueve a un branch designado
 git merge develop			## Combina el directorio local y los archivos del branch
 git config --global user.email "e-mail" #Configura correo
 git config --global user.name "Name"	#Configura usuario
+git add FILE				#Agrega informacion al commit
 git commit FILE2Commit -m "Message"	#Compara Local y Branch se debe hacer antes del push
 git push origin branchname		#Sube los cambios a Github
 ```
@@ -157,6 +159,7 @@ qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vex
 ```bash
 sudo apt-get install gparted
 dd if=/dev/zero of=./imagensd.img bs=1M count=64
+<<<<<<< HEAD
 #Ejecutar comando -> (ls /dev/) para revisar loops en ejecucion, en este caso el loop12 estaba libre
 sudo losetup /dev/loop12 imagensd.img
 sudo gparted /dev/loop12 # en vez de fdisk
@@ -165,15 +168,55 @@ sudo gparted /dev/loop12 # en vez de fdisk
 # copiar archivos 
 cp -rp initramfs/* /media/${USER}/root
 sudo losetup -d /dev/loop12
+=======
+sudo losetup -a						#Muestra los loops en uso
+sudo losetup /dev/loop12 imagensd.img	      #Utilizar un loop que no este en uso.
+sudo gparted /dev/loop12 				# en vez de fdisk
+
+# Device/Create Parition Table../GPT
+# Crear partición de File system: FAT32 New Size: 32MB (Label: BOOT)
+# Crear partición de File system: EXT3 New Size: 30MB (Label: rootfs)
+# Presionar Check, Apply, Save Details
+# Copiar archivos en FAT32 - BOOT
+##  .../u-boot-2019.04/u-boot,
+##  .../linux-5.1/arch/arm/boot/zImage
+##  .../linux-5.1/arch/arm/boot/dts/vexpress-v2p-ca9.dtb
+# copiar archivos
+sudo cp -rp initramfs/* /media/${USER}/Label_EXT3
+## Desmontar particiones
+>>>>>>> 74cf69da458f419ebad5293fae132c80e71e7eb2
 ```
 
 # Corriendo QEMU con imagen SD
 
 ```bash
-#mkimage -n 'Ramdisk Image'  -A arm -O linux -T ramdisk -C gzip -d initramfs.cpio.gz initramfs.uImage
-qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot -sd imagensd.img -nographic -m 512M
+
+qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot-2019.04/u-boot -sd imagensd.img -nographic -m 512M
+##Copiar 4 comandos en consola
 fatload mmc 0 0x60000000 zImage
 fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb
 setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M
 bootz 0x60000000 - 0x60500000
+```
+
+# Configurando el bootcmd para u-boot
+
+```bash
+#Desde el directorio
+cd u-boot-2019.04
+make vexpress_ca9x4_defconfig CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
+make menuconfig CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
+# Configurar de la siguiente forma:
+# delay in seconds before automatically booting = 0
+# Enable a default value for bootcmd = Copiar siguiente codigo
+# setenv bootargs earlyprintk=serial console=${console}$ root=/dev/mmcblk0p2 mem=512M vmalloc=256M; fatload mmc 0 0x60000000 zImage; fatload mmc 0 0x60500000 vexpress-v2p-ca9.dtb; bootz 0x60000000 - 0x60500000
+```
+![menuconfig-uboot.png](menuconfig-uboot.png)
+```bash
+#Finalmente Exit y ...
+make all CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
+
+##Correr QEMU
+cd ..
+qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -kernel u-boot-2019.04/u-boot -sd imagensd.img -nographic -m 512M
 ```
