@@ -11,8 +11,8 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
     u = ((-38*r-74*g+112*b+128)>>8)+128;
     v = ((112*r-94*g-18*b+128)>>8)+128;
     y = y<255?y:255; y = y<0?0:y;
-    u = u<255?y:255; u = u<0?0:y;
-    v = v<255?y:255; v = v<0?0:y;
+    u = u<255?u:255; u = u<0?0:u;
+    v = v<255?v:255; v = v<0?0:v;
     YUV.y[indexYUV]=static_cast<uint8_t>(y);
     YUV.u[indexYUV]=static_cast<uint8_t>(u);
     YUV.v[indexYUV]=static_cast<uint8_t>(v);
