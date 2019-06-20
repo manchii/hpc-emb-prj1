@@ -1,36 +1,62 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <array>
 #include <string>
+#include <chrono>
+#include <functional>
 #include "parseArgs.hpp"
-
-
-template<typename Pointer>
-void RGB2YUV(const Pointer RGB, Pointer YUV) noexcept {
-//  0.299   R  0.587   G  0.114   B
-// -0.14713 R -0.28886 G  0.436   B
-//  0.615   R -0.51499 G -0.10001 B
-  YUV[0] = 0.299*RGB[0]   +0.587*RGB[1]   +0.114*RGB[2];
-  YUV[1] = -0.14713*RGB[0]-0.28886*RGB[1] +0.436*RGB[2];
-  YUV[2] = 0.615*RGB[0]   -0.51499*RGB[1] -0.10001*RGB[2];
-}
+#include "rgb2yuv.hpp"
 
 template<typename Container>
-void printCode(const Container Pix) noexcept {
-  for(auto &color : Pix){
-    std::cout << "\t" << color;
-  } std::cout << "\n";
+void loadImage(const Config &config, Container &rgbBuffer){
+  auto inputFile = std::ifstream{config._rgbFile,std::ios::binary|std::ios::ate};
+  if(!inputFile.good()){
+    std::cout<<"File "<<config._rgbFile<<" not found!\n";
+    exit(EXIT_FAILURE);
+  }
+  const auto height = config._height;
+  const auto width = config._width;
+  const auto sizeFile = inputFile.tellg();
+  const auto pixelBytes = 24/8; //8 bits per color channel
+  if(sizeFile!=(height*width*pixelBytes)){
+    std::cout<<"File "<<config._rgbFile<<" does not fit with the dimensiones given.\n";
+    exit(EXIT_FAILURE);
+  }
+  rgbBuffer.resize(sizeFile);
+  const auto refToVec = reinterpret_cast<char*>(rgbBuffer.data());
+  inputFile.seekg(0, std::ios::beg);
+  inputFile.read(refToVec,sizeFile);
+  inputFile.close();
+}
+void saveImage(const Config &config, std::vector<uint8_t> &buffer){
+  auto outFile = std::ofstream(config._yuvFile, std::ios::binary);
+  outFile.write(reinterpret_cast<char *>(buffer.data()),buffer.size());
+  outFile.close();
 }
 
+struct YUVPlanes{
+  std::vector<uint8_t> buffer;
+  uint8_t* y;
+  uint8_t* u;
+  uint8_t* v;
+  // cada canal se maneja por
+  // subsecciones continuas del buffer
+  YUVPlanes(const uint size):buffer(size){
+    y=&buffer[0];u=&buffer[size/3];v=&buffer[size*2/3];
+  }
+};
+
 int main(int argc, char** argv){
-  using pixel = std::array<double,3>;
-  auto config=makeConfig(argc,argv);
-  
-  auto YUV = pixel{0.0,0.0,0.0};
-  auto RGB = pixel{1.0,0.0,0.0};
-  RGB2YUV(RGB.data(), YUV.data());
-  std::cout<<"YUV:";
-  printCode(YUV);
-  std::cout<<"RGB:";
-  printCode(RGB);
+  const auto config=makeConfig(argc,argv);
+  auto rgb_ch = std::vector<uint8_t>{};
+  loadImage(config,rgb_ch);
+  const auto planesSize=rgb_ch.size();
+  auto yuv_ch = YUVPlanes(planesSize);
+  auto start = std::chrono::system_clock::now();
+  RGB2YUV(rgb_ch,yuv_ch);
+  auto end = std::chrono::system_clock::now();
+  auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+  std::cout<<"Duration of convertion: "<<elapsed.count()<<"\n";
+  saveImage(config,yuv_ch.buffer);
 }

@@ -6,10 +6,10 @@ struct Config{
   uint _width=0;
   std::string _rgbFile="";
   std::string _yuvFile="out.yuv";
-  void printInfo()const{
+  void printInfo()const noexcept{
     std::cout<<
     "Input image file: "<<_rgbFile<<'\n'<<
-    "\tdimensions: "<<_height<<"x"<<_width<<'\n'<<
+    "\tdimensions: "<<_width<<"x"<<_height<<'\n'<<
     "Output image file: "<<_yuvFile<<"\n\n";
   }
   bool notValid()const{
@@ -34,7 +34,7 @@ void printAbout(){
   "Alejandro Bermudez\tEmail: alebermudez94@gmail.com\n"<<
   "Douglas Mora Ceciliano\tEmail: dmc220190@gmail.com\n"<<
   "David Ramirez Arroyo\tEmail: djosera22@gmail.com\n"<<
-  "Kaleb Alfaro Badilla\tEmail: kaleb.23415@gmail.com\n\n";
+  "Kaleb Alfaro Badilla\tEmail: kaleb.23415@gmail.com\n";
 }
 
 Config makeConfig(int argc, char** argv){
@@ -56,9 +56,11 @@ Config makeConfig(int argc, char** argv){
         break;
       case 'a':
         printAbout();
+        exit(EXIT_SUCCESS);
         break;
       case 'h':
         printUsage();
+        exit(EXIT_SUCCESS);
         break;
       case '?':
         printUsage();
