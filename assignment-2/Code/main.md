@@ -5,20 +5,36 @@
 > Implementación del algoritmo RGB --> YUV
 
 ```c++
+
 #include <iostream>
 
-using vect3 = double*;
-void RGB2YUV(vect3 RGB, vect3 YUV){
-//  0.299   R  0.587   G  0.114   B
-// -0.14713 R -0.28886 G  0.436   B
-//  0.615   R -0.51499 G -0.10001 B
-  YUV[0] = 0.299*RGB[0]   +0.587*RGB[1]   +0.114*RGB[2];
-  YUV[1] = -0.14713*RGB[0]-0.28886*RGB[1] +0.436*RGB[2];
-  YUV[2] = 0.615*RGB[0]   -0.51499*RGB[1] -0.10001*RGB[2];
+//using vect3 = double*;
+using vect3 = unsigned char[3];
+
+void RGB2YUV (vect3 RGB, vect3 YUV)
+{
+//  Con punto fijo
+//  66  R+129 G+ 25 B
+// -38  R+-74 G+112 B
+//  112 R+-94 G+-18 B
+
+  YUV[0] = ((66 * RGB[0] + 129 * RGB[1] + 25 * RGB[2] + 128) >> 8) + 16;
+  YUV[1] = ((-38 * RGB[0] - 74 * RGB[1] + 112 * RGB[2] + 128) >> 8) + 128;
+  YUV[2] = ((112 * RGB[0] - 94 * RGB[1] - 18 * RGB[2] + 128) >> 8) + 128;
+
 };
-int main() {
-  double YUV[] = {0.0,0.0,0.0};
-  double RGB[3] = {1.0,0.0,0.0};
+
+int main ()
+{
+  int R=0;
+  int G=255;
+  int B=255;
+  vect3 YUV = {0,0,0};
+  vect3 RGB = {R,G,B};
   RGB2YUV(RGB, YUV);
+  std::cout<<+YUV[0]<<"\n";
+  std::cout<<+YUV[1]<<"\n";
+  std::cout<<+YUV[2]<<"\n";
 }
+
 ```
