@@ -19,6 +19,14 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
 }
 
 #else
+template <typename T>
+void printVec(T vect,int size=8){
+  std::cout << "Vec: ";
+  for(int i=0; i<size; i++){
+    std::cout << +vect[i] <<"__";
+  }
+  std::cout << "\n";
+}
 
 #include <arm_neon.h>
 template<typename ContRGB,typename ContYUV>
@@ -32,30 +40,31 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
     const auto R16 = vreinterpretq_s16_u16(vmovl_u8(r8));
     const auto G16 = vreinterpretq_s16_u16(vmovl_u8(g8));
     const auto B16 = vreinterpretq_s16_u16(vmovl_u8(b8));
-    auto Y16 = int16x8_t{128,128,128,128,128,128,128,128};
-    auto U16 = int16x8_t{128,128,128,128,128,128,128,128};
-    auto V16 = int16x8_t{128,128,128,128,128,128,128,128};
-    auto c1  = int16x8_t{66 ,66 ,66 ,66 ,66 ,66 ,66 ,66 };
-    auto c2  = int16x8_t{129,129,129,129,129,129,129,129};
-    auto c3  = int16x8_t{25 ,25 ,25 ,25 ,25 ,25 ,25 ,25 };
-    vmlaq_s16(R16, c1, Y16);
-    vmlaq_s16(G16, c2, Y16);
-    vmlaq_s16(B16, c3, Y16);
-    c1 = int16x8_t{38,38,38,38,38,38,38,38};
-    c2 = int16x8_t{74,74,74,74,74,74,74,74};
-    c3 = int16x8_t{112,112,112,112,112,112,112,112};
-    vmlsq_s16(R16, c1, U16);
-    vmlsq_s16(G16, c2, U16);
-    vmlaq_s16(B16, c3, U16);
-    c1 = int16x8_t{112,112,112,112,112,112,112,112};
-    c2 = int16x8_t{94,94,94,94,94,94,94,94};
-    c3 = int16x8_t{18,18,18,18,18,18,18,18};
-    vmlaq_s16(R16, c1, V16);
-    vmlsq_s16(G16, c2, V16);
-    vmlsq_s16(B16, c3, V16);
-    Y16 = vshrq_n_s16 (Y16, 8);
-    U16 = vshrq_n_s16 (U16, 8);
-    V16 = vshrq_n_s16 (V16, 8);
+    auto Y16 = int16x8_t{64,64,64,64,64,64,64,64};
+    auto U16 = int16x8_t{64,64,64,64,64,64,64,64};
+    auto V16 = int16x8_t{64,64,64,64,64,64,64,64};
+
+    auto c1  = int16x8_t{33 ,33 ,33 ,33 ,33 ,33 ,33 ,33 };
+    auto c2  = int16x8_t{65,65,65,65,65,65,65,65};
+    auto c3  = int16x8_t{13 ,13 ,13 ,13 ,13 ,13 ,13 ,13 };
+    Y16=vmlaq_s16(Y16, c1, R16);
+    Y16=vmlaq_s16(Y16, c2, G16);
+    Y16=vmlaq_s16(Y16, c3, B16);
+    c1 = int16x8_t{19,19,19,19,19,19,19,19};
+    c2 = int16x8_t{37,37,37,37,37,37,37,37};
+    c3 = int16x8_t{56,56,56,56,56,56,56,56};
+    U16=vmlsq_s16(U16, c1, R16);
+    U16=vmlsq_s16(U16, c2, G16);
+    U16=vmlaq_s16(U16, c3, B16);
+    c1 = int16x8_t{56,56,56,56,56,56,56,56};
+    c2 = int16x8_t{47,47,47,47,47,47,47,47};
+    c3 = int16x8_t{9,9,9,9,9,9,9,9};
+    V16=vmlaq_s16(V16, c1, R16);
+    V16=vmlsq_s16(V16, c2, G16);
+    V16=vmlsq_s16(V16, c3, B16 );
+    Y16 = vshrq_n_s16 (Y16, 7);
+    U16 = vshrq_n_s16 (U16, 7);
+    V16 = vshrq_n_s16 (V16, 7);
     c1 = int16x8_t{16 ,16 ,16 ,16 ,16 ,16 ,16 ,16 };
     c2 = int16x8_t{128,128,128,128,128,128,128,128};
     Y16 = vaddq_s16(Y16, c1);
