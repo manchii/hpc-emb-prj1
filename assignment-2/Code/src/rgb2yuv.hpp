@@ -1,3 +1,4 @@
+#ifndef __ARM_NEON__
 template<typename ContRGB,typename ContYUV>
 void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
   uint indexRGB;
@@ -16,56 +17,56 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
     YUV.v[indexYUV]=static_cast<uint8_t>(v);
   }
 }
-#include "src/dsp/neon.h"
-void RGB2YUVNeon(int8_t const *RGB, int8_t *YUV) noexcept {
+
+#else
+
+#include <arm_neon.h>
+template<typename ContRGB,typename ContYUV>
+void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
+  uint indexRGB; uint indexYUV;
   for(indexRGB=0,indexYUV=0; indexRGB<RGB.size(); indexRGB+=24,indexYUV+=8){
-    int8x8x3_t rgb=vld3_u8(&RGB[indexRGB]);
-    uint8x8_t y8;uint8x8_t u8;uint8x8_t v8;
-    uint16x8_t Y16;uint16x8_t U16;uint16x8_t V16;
-    uint16x8_t c1;uint16x8_t c2;uint16x8_t c3;
-    const uint8x8_t &r8=rgb.val[0];
-    const uint8x8_t &g8=rgb.val[1];
-    const uint8x8_t &b8=rgb.val[2];
-    const uint16x8_t R16 = vmovl_u8(r8);
-    const uint16x8_t G16 = vmovl_u8(g8);
-    const uint16x8_t B16 = vmovl_u8(b8);
-    vduph_laneq_s16 (Y16, 128);
-    vduph_laneq_s16 (U16, 128);
-    vduph_laneq_s16 (V16, 128);
-    vduph_laneq_s16 (c1, 66);
-    vduph_laneq_s16 (c2, 129);
-    vduph_laneq_s16 (c3, 25);
-    vmlaq_s16 (R16, c1, Y16);
-    vmlaq_s16 (G16, c2, Y16);
-    vmlaq_s16 (B16, c3, Y16);
-    vduph_laneq_s16 (c1, 38);
-    vduph_laneq_s16 (c2, 74);
-    vduph_laneq_s16 (c3, 112);
-    vmlsq_s16 (R16, c1, U16);
-    vmlsq_s16 (G16, c2, U16);
-    vmlaq_s16 (B16, c3, U16);
-    vduph_laneq_s16 (c1, 112);
-    vduph_laneq_s16 (c2, 94);
-    vduph_laneq_s16 (c3, 18);
-    vmlaq_s16 (R16, c1, V16);
-    vmlsq_s16 (G16, c2, V16);
-    vmlsq_s16 (B16, c3, V16);
-    Y16=vshrq_n_s16 (Y16, 8);
-    U16=vshrq_n_s16 (U16, 8);
-    V16=vshrq_n_s16 (V16, 8);
-    vduph_laneq_s16 (c1, 16);
-    vduph_laneq_s16 (c2, 128);
-    Y16=vadd_s16 (Y16, C1);
-    U16=vadd_s16 (U16, C2);
-    V16=vadd_s16 (V16, C2);
-    y8=vmovn_s16(Y16);
-    u8=vmovn_s16(Y16);
-    v8=vmovn_s16(Y16);
-    YUV.y[indexYUV]=vstl_s8(&YUV.y[indexYUV],y8);
-    YUV.u[indexYUV]=vstl_s8(&YUV.y[indexYUV],u8);
-    YUV.v[indexYUV]=vstl_s8(&YUV.y[indexYUV],v8);
-    
+    const uint8x8x3_t rgb = vld3_u8(&RGB[indexRGB]);
+    const uint8x8_t &r8 = rgb.val[0];
+    const uint8x8_t &g8 = rgb.val[1];
+    const uint8x8_t &b8 = rgb.val[2];
+    const auto R16 = vreinterpretq_s16_u16(vmovl_u8(r8));
+    const auto G16 = vreinterpretq_s16_u16(vmovl_u8(g8));
+    const auto B16 = vreinterpretq_s16_u16(vmovl_u8(b8));
+    auto Y16 = int16x8_t{128,128,128,128,128,128,128,128};
+    auto U16 = int16x8_t{128,128,128,128,128,128,128,128};
+    auto V16 = int16x8_t{128,128,128,128,128,128,128,128};
+    auto c1  = int16x8_t{66 ,66 ,66 ,66 ,66 ,66 ,66 ,66 };
+    auto c2  = int16x8_t{129,129,129,129,129,129,129,129};
+    auto c3  = int16x8_t{25 ,25 ,25 ,25 ,25 ,25 ,25 ,25 };
+    vmlaq_s16(R16, c1, Y16);
+    vmlaq_s16(G16, c2, Y16);
+    vmlaq_s16(B16, c3, Y16);
+    c1 = int16x8_t{38,38,38,38,38,38,38,38};
+    c2 = int16x8_t{74,74,74,74,74,74,74,74};
+    c3 = int16x8_t{112,112,112,112,112,112,112,112};
+    vmlsq_s16(R16, c1, U16);
+    vmlsq_s16(G16, c2, U16);
+    vmlaq_s16(B16, c3, U16);
+    c1 = int16x8_t{112,112,112,112,112,112,112,112};
+    c2 = int16x8_t{94,94,94,94,94,94,94,94};
+    c3 = int16x8_t{18,18,18,18,18,18,18,18};
+    vmlaq_s16(R16, c1, V16);
+    vmlsq_s16(G16, c2, V16);
+    vmlsq_s16(B16, c3, V16);
+    Y16 = vshrq_n_s16 (Y16, 8);
+    U16 = vshrq_n_s16 (U16, 8);
+    V16 = vshrq_n_s16 (V16, 8);
+    c1 = int16x8_t{16 ,16 ,16 ,16 ,16 ,16 ,16 ,16 };
+    c2 = int16x8_t{128,128,128,128,128,128,128,128};
+    Y16 = vaddq_s16(Y16, c1);
+    U16 = vaddq_s16(U16, c2);
+    V16 = vaddq_s16(V16, c2);
+    auto y8 = vreinterpret_s8_u8(vmovn_s16(Y16));
+    auto u8 = vreinterpret_s8_u8(vmovn_s16(U16));
+    auto v8 = vreinterpret_s8_u8(vmovn_s16(V16));
+    vst1_u8(&YUV.y[indexYUV],y8);
+    vst1_u8(&YUV.u[indexYUV],u8);
+    vst1_u8(&YUV.v[indexYUV],v8);
   }
 }
-
-
+#endif
