@@ -61,9 +61,9 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
     Y16 = vaddq_s16(Y16, c1);
     U16 = vaddq_s16(U16, c2);
     V16 = vaddq_s16(V16, c2);
-    auto y8 = vreinterpret_s8_u8(vmovn_s16(Y16));
-    auto u8 = vreinterpret_s8_u8(vmovn_s16(U16));
-    auto v8 = vreinterpret_s8_u8(vmovn_s16(V16));
+    auto y8 = vreinterpret_u8_s8(vmovn_s16(Y16));
+    auto u8 = vreinterpret_u8_s8(vmovn_s16(U16));
+    auto v8 = vreinterpret_u8_s8(vmovn_s16(V16));
     vst1_u8(&YUV.y[indexYUV],y8);
     vst1_u8(&YUV.u[indexYUV],u8);
     vst1_u8(&YUV.v[indexYUV],v8);
