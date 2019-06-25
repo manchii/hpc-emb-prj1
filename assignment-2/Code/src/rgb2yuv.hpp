@@ -56,48 +56,8 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
 	vst1_u8(S,y8);\}
 
     Value(R16,G16,B15,33,65,13,16,YUV.y[indexYUV]);
-    Value(R16,G16,B15,19,37,56,128,YUV.u[indexYUV]);
-    Value(R16,G16,B15,56,47,9,128,YUV.v[indexYUV]);
-
-    /*auto Y16 = int16x8_t{64,64,64,64,64,64,64,64};
-    auto c  = int16x8_t{33 ,33 ,33 ,33 ,33 ,33 ,33 ,33 };
-    Y16=vmlaq_s16(Y16, c, R16);
-    c  = int16x8_t{65,65,65,65,65,65,65,65};
-    Y16=vmlaq_s16(Y16, c, G16);
-    c  = int16x8_t{13 ,13 ,13 ,13 ,13 ,13 ,13 ,13 };
-    Y16=vmlaq_s16(Y16, c, B16);
-    Y16 = vshrq_n_s16 (Y16, 7);
-    c = int16x8_t{16 ,16 ,16 ,16 ,16 ,16 ,16 ,16 };
-    Y16 = vaddq_s16(Y16, c);
-    auto y8 = vreinterpret_u8_s8(vmovn_s16(Y16));
-    vst1_u8(&YUV.y[indexYUV],y8);
-
-    auto U16 = int16x8_t{64,64,64,64,64,64,64,64};
-    auto c = int16x8_t{19,19,19,19,19,19,19,19};
-    U16=vmlsq_s16(U16, c, R16);
-    c = int16x8_t{37,37,37,37,37,37,37,37};
-    U16=vmlsq_s16(U16, c, G16);
-    c = int16x8_t{56,56,56,56,56,56,56,56};
-    U16=vmlaq_s16(U16, c, B16);
-    U16 = vshrq_n_s16 (U16, 7);
-    c = int16x8_t{128,128,128,128,128,128,128,128};
-    U16 = vaddq_s16(U16, c);
-    auto u8 = vreinterpret_u8_s8(vmovn_s16(U16));
-    vst1_u8(&YUV.u[indexYUV],u8);
-
-
-    auto V16 = int16x8_t{64,64,64,64,64,64,64,64};
-    auto c = int16x8_t{56,56,56,56,56,56,56,56};
-    V16=vmlaq_s16(V16, c, R16);
-    c = int16x8_t{47,47,47,47,47,47,47,47};
-    V16=vmlsq_s16(V16, c, G16);
-    c = int16x8_t{9,9,9,9,9,9,9,9};
-    V16=vmlsq_s16(V16, c, B16 );
-    V16 = vshrq_n_s16 (V16, 7);
-    c = int16x8_t{128,128,128,128,128,128,128,128};
-    V16 = vaddq_s16(V16, c);
-    auto v8 = vreinterpret_u8_s8(vmovn_s16(V16));
-    vst1_u8(&YUV.v[indexYUV],v8);*/
+    Value(R16,G16,B15,-19,-37,56,128,YUV.u[indexYUV]);
+    Value(R16,G16,B15,56,-47,-9,128,YUV.v[indexYUV]);
   }
 }
 #endif
