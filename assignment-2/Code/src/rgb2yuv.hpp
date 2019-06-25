@@ -40,42 +40,24 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
     const auto R16 = vreinterpretq_s16_u16(vmovl_u8(r8));
     const auto G16 = vreinterpretq_s16_u16(vmovl_u8(g8));
     const auto B16 = vreinterpretq_s16_u16(vmovl_u8(b8));
-    auto Y16 = int16x8_t{64,64,64,64,64,64,64,64};
-    auto U16 = int16x8_t{64,64,64,64,64,64,64,64};
-    auto V16 = int16x8_t{64,64,64,64,64,64,64,64};
+    
+    #define VALUE(R,G,B,c1,c2,c3,c4,S){\
+    	auto Y16 = int16x8_t{64,64,64,64,64,64,64,64};\
+	auto c  = int16x8_t{c1 ,c1 ,c1 ,c1 ,c1 ,c1 ,c1 ,c1 };\
+	Y16=vmlaq_s16(Y16, c, R);\
+	c  = int16x8_t{c2 ,c2 ,c2 ,c2 ,c2 ,c2 ,c2 ,c2 };\
+	Y16=vmlaq_s16(Y16, c, G);\
+	c  = int16x8_t{c3 ,c3 ,c3 ,c3 ,c3 ,c3 ,c3 ,c3 };\
+	Y16=vmlaq_s16(Y16, c, B);\
+	Y16 = vshrq_n_s16 (Y16, 7);\
+	c = int16x8_t{c4 ,c4 ,c4 ,c4 ,c4 ,c4 ,c4 ,c4 };\
+	Y16 = vaddq_s16(Y16, c);\
+	auto y8 = vreinterpret_u8_s8(vmovn_s16(Y16));\
+	vst1_u8(&S,y8);}
 
-    auto c1  = int16x8_t{33 ,33 ,33 ,33 ,33 ,33 ,33 ,33 };
-    auto c2  = int16x8_t{65,65,65,65,65,65,65,65};
-    auto c3  = int16x8_t{13 ,13 ,13 ,13 ,13 ,13 ,13 ,13 };
-    Y16=vmlaq_s16(Y16, c1, R16);
-    Y16=vmlaq_s16(Y16, c2, G16);
-    Y16=vmlaq_s16(Y16, c3, B16);
-    c1 = int16x8_t{19,19,19,19,19,19,19,19};
-    c2 = int16x8_t{37,37,37,37,37,37,37,37};
-    c3 = int16x8_t{56,56,56,56,56,56,56,56};
-    U16=vmlsq_s16(U16, c1, R16);
-    U16=vmlsq_s16(U16, c2, G16);
-    U16=vmlaq_s16(U16, c3, B16);
-    c1 = int16x8_t{56,56,56,56,56,56,56,56};
-    c2 = int16x8_t{47,47,47,47,47,47,47,47};
-    c3 = int16x8_t{9,9,9,9,9,9,9,9};
-    V16=vmlaq_s16(V16, c1, R16);
-    V16=vmlsq_s16(V16, c2, G16);
-    V16=vmlsq_s16(V16, c3, B16 );
-    Y16 = vshrq_n_s16 (Y16, 7);
-    U16 = vshrq_n_s16 (U16, 7);
-    V16 = vshrq_n_s16 (V16, 7);
-    c1 = int16x8_t{16 ,16 ,16 ,16 ,16 ,16 ,16 ,16 };
-    c2 = int16x8_t{128,128,128,128,128,128,128,128};
-    Y16 = vaddq_s16(Y16, c1);
-    U16 = vaddq_s16(U16, c2);
-    V16 = vaddq_s16(V16, c2);
-    auto y8 = vreinterpret_u8_s8(vmovn_s16(Y16));
-    auto u8 = vreinterpret_u8_s8(vmovn_s16(U16));
-    auto v8 = vreinterpret_u8_s8(vmovn_s16(V16));
-    vst1_u8(&YUV.y[indexYUV],y8);
-    vst1_u8(&YUV.u[indexYUV],u8);
-    vst1_u8(&YUV.v[indexYUV],v8);
+    VALUE(R16,G16,B16,33,65,13,16,YUV.y[indexYUV]);
+    VALUE(R16,G16,B16,-19,-37,56,128,YUV.u[indexYUV]);
+    VALUE(R16,G16,B16,56,-47,-9,128,YUV.v[indexYUV]);
   }
 }
 #endif
