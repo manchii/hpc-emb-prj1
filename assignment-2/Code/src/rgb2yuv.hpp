@@ -41,7 +41,7 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
     const auto G16 = vreinterpretq_s16_u16(vmovl_u8(g8));
     const auto B16 = vreinterpretq_s16_u16(vmovl_u8(b8));
     
-    #define Value(R,G,B,c1,c2,c3,c4,&S){\
+    #define VALUE(R,G,B,c1,c2,c3,c4,S){\
     	auto Y16 = int16x8_t{64,64,64,64,64,64,64,64};\
 	auto c  = int16x8_t{c1 ,c1 ,c1 ,c1 ,c1 ,c1 ,c1 ,c1 };\
 	Y16=vmlaq_s16(Y16, c, R);\
@@ -53,11 +53,11 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
 	c = int16x8_t{c4 ,c4 ,c4 ,c4 ,c4 ,c4 ,c4 ,c4 };\
 	Y16 = vaddq_s16(Y16, c);\
 	auto y8 = vreinterpret_u8_s8(vmovn_s16(Y16));\
-	vst1_u8(S,y8);\}
+	vst1_u8(&S,y8);}
 
-    Value(R16,G16,B15,33,65,13,16,YUV.y[indexYUV]);
-    Value(R16,G16,B15,-19,-37,56,128,YUV.u[indexYUV]);
-    Value(R16,G16,B15,56,-47,-9,128,YUV.v[indexYUV]);
+    VALUE(R16,G16,B16,33,65,13,16,YUV.y[indexYUV]);
+    VALUE(R16,G16,B16,-19,-37,56,128,YUV.u[indexYUV]);
+    VALUE(R16,G16,B16,56,-47,-9,128,YUV.v[indexYUV]);
   }
 }
 #endif
