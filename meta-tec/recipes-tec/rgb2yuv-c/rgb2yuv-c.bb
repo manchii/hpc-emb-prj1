@@ -21,13 +21,16 @@ SRC_URI = "file://main.cpp \
 	   file://configure.ac \
 	   file://800x608c.brg \	
 	   file://outc.yuv \
+           file://c_results.pdf \
+
 "
 S = "${WORKDIR}"
 
 do_install_append() {
       install -d ${D}/rgb2yuv-docs
       cp ${WORKDIR}/outc.yuv /${D}/rgb2yuv-docs
-      cp ${WORKDIR}/800x608c.brg /${D}/rgb2yuv-docs  	
+      cp ${WORKDIR}/800x608c.brg /${D}/rgb2yuv-docs
+      cp ${WORKDIR}/c_results.pdf /${D}/rgb2yuv-docs	  	
 }
 FILES_${PN} += "/rgb2yuv-docs"
 
