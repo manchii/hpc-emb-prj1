@@ -16,3 +16,4 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
     YUV.v[indexYUV]=static_cast<uint8_t>(v);
   }
 }
+
