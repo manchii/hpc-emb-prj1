@@ -56,15 +56,15 @@ Config makeConfig(int argc, char** argv){
         break;
       case 'a':
         printAbout();
-        exit(EXIT_SUCCESS);
+        std::exit(EXIT_SUCCESS);
         break;
       case 'h':
         printUsage();
-        exit(EXIT_SUCCESS);
+        std::exit(EXIT_SUCCESS);
         break;
       case '?':
         printUsage();
-        exit(EXIT_FAILURE);
+        std::exit(EXIT_FAILURE);
         break;
     }
   }

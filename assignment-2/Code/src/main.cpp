@@ -1,10 +1,13 @@
+/*---------------------------rgb2yuv main----------------------------------/
+This code targets c++17 standard
+/----------------------------------------------------------------------------*/
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <array>
 #include <string>
 #include <chrono>
-#include <functional>
 #include "parseArgs.hpp"
 #include "rgb2yuv.hpp"
 
@@ -13,7 +16,7 @@ void loadImage(const Config &config, Container &rgbBuffer){
   auto inputFile = std::ifstream{config._rgbFile,std::ios::binary|std::ios::ate};
   if(!inputFile.good()){
     std::cout<<"File "<<config._rgbFile<<" not found!\n";
-    exit(EXIT_FAILURE);
+    std::exit(EXIT_FAILURE);
   }
   const auto height = config._height;
   const auto width = config._width;
@@ -21,7 +24,7 @@ void loadImage(const Config &config, Container &rgbBuffer){
   const auto pixelBytes = 24/8; //8 bits per color channel
   if(sizeFile!=(height*width*pixelBytes)){
     std::cout<<"File "<<config._rgbFile<<" does not fit with the dimensiones given.\n";
-    exit(EXIT_FAILURE);
+    std::exit(EXIT_FAILURE);
   }
   rgbBuffer.resize(sizeFile);
   const auto refToVec = reinterpret_cast<char*>(rgbBuffer.data());
@@ -40,8 +43,9 @@ struct YUVPlanes{
   uint8_t* y;
   uint8_t* u;
   uint8_t* v;
-  // cada canal se maneja por
-  // subsecciones continuas del buffer
+  // Each channel is allocated in one buffer
+  // references y,u,v hold the base pointer to
+  // each pixel plane
   YUVPlanes(const uint size):buffer(size){
     y=&buffer[0];u=&buffer[size/3];v=&buffer[size*2/3];
   }
@@ -57,6 +61,6 @@ int main(int argc, char** argv){
   RGB2YUV(rgb_ch,yuv_ch);
   auto end = std::chrono::system_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-  std::cout<<"Duration of convertion: "<<elapsed.count()<<"\n";
+  std::cout<<"Duration of convertion: "<<elapsed.count()<<"us\n";
   saveImage(config,yuv_ch.buffer);
 }

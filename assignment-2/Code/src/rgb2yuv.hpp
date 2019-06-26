@@ -1,10 +1,10 @@
 
-#ifndef __ARM_NEON__
+#ifndef NEON
 
 /*---------------------------Generic_Version----------------------------------/
 This code serves as a placeholder for non-NEON compatible processor (ARMCPU)
 The precision used is 8-bits signed fixed-point.
-This implementation assumes RGB888 packed format and converts it to YUV(4:4:4)p 
+This implementation assumes RGB888 packed format and converts it to YUV(4:4:4)p
 /----------------------------------------------------------------------------*/
 template<typename ContRGB,typename ContYUV>
 void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
@@ -34,14 +34,13 @@ the performance of the program.
 Note that in this case the 7-bits signed fixed-point of pecision is being
 used instead of the 8-bits that are being used in the previous version (Generic Version).
 Thus, the following coefficients are divided by two from the previous
-implementation. 
+implementation.
 XXX For more information check the attached spreadsheet in the
     repository (Description_RGB2YUVNEON) XXX
-/-----------------------------------------------------------------------------*/ 
-
+/-----------------------------------------------------------------------------*/
+//tested with cflags -march=armv7 -mfpu=neon -mfloat-abi=hard
 #include <arm_neon.h>
 template<typename ContRGB,typename ContYUV>
-
 void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
   uint indexRGB; uint indexYUV;
   for(indexRGB=0,indexYUV=0; indexRGB<RGB.size(); indexRGB+=24,indexYUV+=8){
@@ -64,7 +63,7 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
     const auto B16 = vreinterpretq_s16_u16(vmovl_u8(b8));
 
     //This macro calculate the equation Y=((c1*R+c2*G+c3*B)>>7)+c4
-    #define VALUE(R,G,B,c1,c2,c3,c4,S){\
+    #define EQUATION(R,G,B,c1,c2,c3,c4,S){\
     	auto Y16 = int16x8_t{64,64,64,64,64,64,64,64};\
 	auto c  = int16x8_t{c1 ,c1 ,c1 ,c1 ,c1 ,c1 ,c1 ,c1 };\
 	Y16=vmlaq_s16(Y16, c, R);\
@@ -78,12 +77,13 @@ void RGB2YUV(const ContRGB RGB, ContYUV YUV) noexcept {
 	auto y8 = vreinterpret_u8_s8(vmovn_s16(Y16));\
 	vst1_u8(&S,y8);}
 
+    //Evaluate macro with:
     //Y=((33*R+65*G+13*B)>>7)+16
     //U=((-19*R+-37*G+56*B)>>7)+128
     //V=((56*R+-47*G+-9*B)>>7)+128
-    VALUE(R16,G16,B16,33,65,13,16,YUV.y[indexYUV]);
-    VALUE(R16,G16,B16,-19,-37,56,128,YUV.u[indexYUV]);
-    VALUE(R16,G16,B16,56,-47,-9,128,YUV.v[indexYUV]);
+    EQUATION(R16,G16,B16,33,65,13,16,YUV.y[indexYUV]);
+    EQUATION(R16,G16,B16,-19,-37,56,128,YUV.u[indexYUV]);
+    EQUATION(R16,G16,B16,56,-47,-9,128,YUV.v[indexYUV]);
   }
 }
 #endif

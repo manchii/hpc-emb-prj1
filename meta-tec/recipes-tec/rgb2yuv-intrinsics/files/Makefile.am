@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 # CFLAGS = -Wall -pedantic
-CXXFLAGS = -std=c++17 -lm -O3 -mfpu=neon
+CXXFLAGS = -std=c++17 -lm -O3 -mfpu=neon -DNEON
 include_HEADERS = rgb2yuv.hpp
 include_HEADERS = parseArgs.hpp
 
