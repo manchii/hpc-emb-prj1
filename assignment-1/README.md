@@ -15,10 +15,10 @@ git clone https://github.com/manchii/hpc-emb-prj1
 Comandos
 
 ```bash
-git status				## Muestra el branch actual
+git status				## Muestra el branch actual y los archivos que no tienen commit
 git branch dj-b				## Crea un branch
 git checkout dj-b			## Mueve a un branch designado
-git merge develop			## Convina el directorio local y los archivos del branch
+git merge develop			## Combina el directorio local y los archivos del branch
 git config --global user.email "e-mail" #Configura correo
 git config --global user.name "Name"	#Configura usuario
 git add FILE				#Agrega informacion al commit
@@ -159,6 +159,16 @@ qemu-system-arm -machine vexpress-a9 -cpu cortex-a9 -dtb ./arch/arm/boot/dts/vex
 ```bash
 sudo apt-get install gparted
 dd if=/dev/zero of=./imagensd.img bs=1M count=64
+<<<<<<< HEAD
+#Ejecutar comando -> (ls /dev/) para revisar loops en ejecucion, en este caso el loop12 estaba libre
+sudo losetup /dev/loop12 imagensd.img
+sudo gparted /dev/loop12 # en vez de fdisk
+# Crear partición de FAT32 32MB (BOOT) y EXT3 32MB (rootfs)
+# copiar archivos u-boot,zImage,vexpress-v2p-ca9.dtb en FAT32 - BOOT
+# copiar archivos 
+cp -rp initramfs/* /media/${USER}/root
+sudo losetup -d /dev/loop12
+=======
 sudo losetup -a						#Muestra los loops en uso
 sudo losetup /dev/loop12 imagensd.img	      #Utilizar un loop que no este en uso.
 sudo gparted /dev/loop12 				# en vez de fdisk
@@ -174,6 +184,7 @@ sudo gparted /dev/loop12 				# en vez de fdisk
 # copiar archivos
 sudo cp -rp initramfs/* /media/${USER}/Label_EXT3
 ## Desmontar particiones
+>>>>>>> 74cf69da458f419ebad5293fae132c80e71e7eb2
 ```
 
 # Corriendo QEMU con imagen SD
