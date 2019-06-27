@@ -21,6 +21,7 @@ SRC_URI = "file://main.cpp \
 	   file://configure.ac \
 	   file://800x608.brg \	
 	   file://out.yuv \
+           file://intrinsics_results.pdf \
 "
 
 S = "${WORKDIR}"
@@ -28,7 +29,8 @@ S = "${WORKDIR}"
 do_install_append() {
       install -d ${D}/rgb2yuv-docs
       cp ${WORKDIR}/out.yuv /${D}/rgb2yuv-docs
-      cp ${WORKDIR}/800x608.brg /${D}/rgb2yuv-docs  	
+      cp ${WORKDIR}/800x608.brg /${D}/rgb2yuv-docs  
+      cp ${WORKDIR}/intrinsics_results.pdf /${D}/rgb2yuv-docs	
 }
 FILES_${PN} += "/rgb2yuv-docs"
 
@@ -36,4 +38,3 @@ inherit autotools
 
 # The autotools configuration I am basing this on seems to have a problem with a race condition when parallel make is enabled
 PARALLEL_MAKE = ""
-
